@@ -29,7 +29,7 @@ module.exports.loginUser = (req, res) => {
 }
 
 module.exports.setAsAdmin = async (req, res) => {
-    const userId = req.body.userId;
+    const userId = req.params.userId;
 
     try {
         const user = await User.findById(userId);
@@ -90,7 +90,7 @@ module.exports.getProfile = (req, res) => {
     	    return res.status(404).send({ error: 'User not found' });
     	}
 
-        result.password = "";
+        user.password = "";
         return res.status(200).send({ user });
     })
     .catch(err => {

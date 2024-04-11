@@ -12,7 +12,6 @@ module.exports.createAccessToken = (user) => {
 }
 
 module.exports.verify = (req, res, next) => {
-	console.log(req.headers.authorization);
 
 	let token = req.headers.authorization;
 
@@ -30,8 +29,6 @@ module.exports.verify = (req, res, next) => {
 					message: err.message
 				})
 			} else {
-				console.log("Result from verify method:")
-				console.log(decodedToken);
 
 				req.user = decodedToken;
 
