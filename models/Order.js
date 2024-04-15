@@ -6,7 +6,7 @@ const orderSchema = new mongoose.Schema({
 		type: Schema.Types.ObjectId,
 		required: [true, "User ID is required"]
 	},
-	cartItems: [
+	productsOrdered: [
 		{
 		    productId: {
 		      type: Schema.Types.ObjectId,
