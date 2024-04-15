@@ -3,13 +3,13 @@ const {mongoose, Schema} = require('mongoose');
 // Schema
 const cartSchema = new mongoose.Schema({
 	userId: {
-		type: Schema.Types.ObjectId,
+		type: String,
 		required: [true, "User ID is required"]
 	},
 	cartItems: [
 		{
 		    productId: {
-		      type: Schema.Types.ObjectId,
+		      type: String,
 		      required: [true, "Product ID is required"]
 		    },
 		    quantity: {
