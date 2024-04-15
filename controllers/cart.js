@@ -1,6 +1,10 @@
 const Cart = require("../models/Cart");
 
 module.exports.addToCart = (req, res) => {
+    if(req.user.isAdmin){
+        return res.status(403).send({error: "Admin is forbidden"});
+    }
+
 	let newCart = new Cart({
         userId: req.user.id,
         cartItems : req.body.cartItems,
