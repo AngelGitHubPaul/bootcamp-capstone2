@@ -1,6 +1,7 @@
 const Cart = require("../models/Cart");
 const Product = require("../models/Product");
 const User = require("../models/User");
+const { ObjectId } = require('mongodb')
 
 
 module.exports.addToCart = (req, res) => {
@@ -60,10 +61,9 @@ module.exports.addToCart = (req, res) => {
 
 
 module.exports.getCart = (req, res) => {
-
-    return Cart.findOne({})
+    return Cart.findOne({userId: req.user.id})
     .then(cart => {
-        if(cart.length > 0){
+        if(cart){
             return res.status(200).send({cart});
         } else {
             return res.status(200).send({ message: 'No cart found.' });
@@ -75,35 +75,45 @@ module.exports.getCart = (req, res) => {
     });
 };
 
-module.exports.updateQuantity = (req, res) => {
-    // console.log(req.user.id)
-    return Cart.findOne({userId: req.user.id})
-    .then(cart => {
-        if(cart) {
-            const cartItem = cart.CartItems.find((item) => item.productId === req.body.productId)
+module.exports.updateQuantity = async (req, res) => {
+    try {
+        const cart = await Cart.findOne({ userId: req.user.id });
+        
+        if (cart) {
+            const cartItem = cart.cartItems.find((item) => item.productId === req.body.productId);
+            let price = await getProductPrice(req.body.productId); // Wait for the price
             if (cartItem) {
-                cartItem.quantity = req.body.quantity
-                cartItem.subtotal = req.body.quantity * getProductPrice(req.body.productId) 
+                cartItem.quantity = req.body.quantity;
+                cartItem.subtotal = req.body.quantity * price; // Calculate subtotal using the awaited price
             } else {
-                const subtotal = req.body.quantity * getProductPrice(req.body.productId) 
-
+                const subtotal = req.body.quantity * price; // Calculate subtotal using the awaited price
                 cart.cartItems.push({
                     productId: req.body.productId,
                     quantity: req.body.quantity,
                     subtotal: subtotal
-                })
+                });
             }
-            cart.totalPrice = cart.CartItems.subtotal.reduce((a, b) => a + b, 0)
-            Cart.save().then(updatedCart => {
-                res.send(updatedCart)
-            }).catch(err => res.status(500).send({error: 'Error in updating a cart.'})
-            )
+            cart.totalPrice = cart.cartItems.reduce((total, item) => total + item.subtotal, 0);
+            const updatedCart = await cart.save();
+            res.send(updatedCart);
         } else {
-            res.status(404).send({error: "Cart not found"})
+            res.status(404).send({ error: "Cart not found" });
         }
-    })
-
+    } catch (error) {
+        res.status(500).send({ error: 'Error in updating a cart.' });
+    }
 }
-function getProductPrice(productId) {
-    return Product.findById(productId).then(product => product.price).catch(error => error)
+
+async function getProductPrice(productId) {
+    const newProductId = new ObjectId(productId)
+    console.log(newProductId)
+    try {
+        const product = await Product.findById(newProductId);
+        console.log(productId)
+        console.log(product)
+        return product.price;
+    } catch (error) {
+        console.log(error)
+        return 0; 
+    }
 }
