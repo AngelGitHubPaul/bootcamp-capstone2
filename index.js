@@ -3,10 +3,11 @@ const mongoose = require("mongoose");
 const port = 4000;
 const userRoutes = require("./routes/user");
 const productRoutes = require("./routes/product");
+const cartRoutes = require("./routes/cart");
 
 const app = express();
 
-mongoose.connect("mongodb+srv://admin:admin123@b402-course-booking.5g84hfd.mongodb.net/ecommerce-api?retryWrites=true&w=majority&appName=b402-course-booking");
+mongoose.connect("mongodb+srv://admin:admin123@b402-course-booking.u2y1t4i.mongodb.net/ecommerce-api?retryWrites=true&w=majority&appName=B402-Course-Booking");
 
 
 
@@ -19,6 +20,8 @@ app.use(express.urlencoded({extended:true}));
 
 app.use("/users", userRoutes);
 app.use("/products", productRoutes);
+app.use("/cart", cartRoutes);
+
 
 if(require.main === module) {
 	app.listen(process.env.PORT || port, () => {
