@@ -1,10 +1,9 @@
 const express = require("express");
 const productController = require("../controllers/product");
-
-const auth = require("../auth");
-const { verify, verifyAdmin } = auth;
-
 const router = express.Router();
+const { verify, verifyAdmin } = require("../auth");
+
+
 
 //Route for creating a product
 router.post("/", verify, verifyAdmin, productController.addProduct);
@@ -23,3 +22,5 @@ router.patch("/:productId/update", verify, verifyAdmin, productController.update
 router.patch("/:productId/archive", verify, verifyAdmin, productController.archiveProduct);
 
 router.patch("/:productId/activate", verify, verifyAdmin, productController.activateProduct);
+
+module.exports = router;
