@@ -3,15 +3,15 @@ const mongoose = require("mongoose");
 const productSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, "Course Name is required"]
+        required: [true, "Product Name is required"]
     },
     description: {
         type: String,
-        required: [true, "Course Description is required"]
+        required: [true, "Product Description is required"]
     },
     price: {
         type: Number,
-        required: [true, "Course Price is required"]
+        required: [true, "Product Price is required"]
     },
     isActive: {
         type: Boolean,
@@ -23,4 +23,4 @@ const productSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model("Products", productSchema);
+module.exports = mongoose.model("Product", productSchema);
