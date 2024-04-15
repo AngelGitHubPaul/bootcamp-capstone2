@@ -53,7 +53,3 @@ module.exports.addToCart = (req, res) => {
         return res.status(500).send({error: 'Error finding the cart'})
     })
 }
-
-module.exports.updateCartQuantity = (req, res) => {
-
-}
