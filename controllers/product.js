@@ -9,11 +9,12 @@ module.exports.addProduct = (req, res) => {
         price : req.body.price
     });
 
-    Product.findOne({name: req.body.name})
+    return Product.findOne({name: req.body.name})
     .then(existingProduct => {
         if (existingProduct){
             return res.status(409).send({error: "Product already exists"})
         }
+
         return newProduct.save()
         .then(savedProduct => {
             return res.status(201).send({savedProduct})
@@ -27,23 +28,6 @@ module.exports.addProduct = (req, res) => {
         console.error("Error in finding the product", findErr)
         return res.status(500).send({error: 'Error finding the product'})
     })
-
-    
-
-    try {
-        let newProduct = new Product({
-            name : req.body.name,
-            description : req.body.description,
-            price : req.body.price
-        });
-
-        return newProduct.save()
-        .then(result => res.send(result))
-        .catch(err => res.send(err));
-    } catch (err) {
-        console.log(err)
-        res.send("Error in variables");
-    }
 }; 
 
 
@@ -83,9 +67,9 @@ module.exports.getAllActive = (req, res) => {
 
 
 module.exports.getSingleProduct = (req, res) => {
-	Course.findById(req.params.courseId)
+	Product.findById(req.params.productId)
 	.then(product => {
-	    if (product){
+	    if(product){
 	        return res.status(200).send({product})
 	    }else{
 	        return res.status(404).send({error : 'Product not found'})
@@ -130,7 +114,7 @@ module.exports.archiveProduct = (req, res) => {
     if(!req.user.isAdmin){
         return res.status(403).send(false)
     } else {
-        return Product.findByIdAndUpdate(req.params.productId, updateActiveField)
+        return Product.findByIdAndUpdate(req.params.productId, updateActiveField, {new: true})
         .then(archivedProduct => {
             if (archivedProduct) {
                 res.status(200).send({
@@ -155,7 +139,7 @@ module.exports.activateProduct = (req, res) => {
     if(!req.user.isAdmin){
         return res.status(403).send(false)
     } else {
-        return Product.findByIdAndUpdate(req.params.productId, updateActiveField)
+        return Product.findByIdAndUpdate(req.params.productId, updateActiveField, {new: true})
         .then(activatedProduct => {
             if (activatedProduct) {
                 return res.status(200).send({
