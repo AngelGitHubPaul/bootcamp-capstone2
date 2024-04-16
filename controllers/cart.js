@@ -9,7 +9,7 @@ module.exports.addToCart = (req, res) => {
         return res.status(403).send({error: "Admin is forbidden"});
     }
 
-	let newCart = new Cart({
+    let newCart = new Cart({
         userId: req.user.id,
         cartItems : req.body.cartItems,
         totalPrice : req.body.totalPrice
@@ -117,3 +117,48 @@ async function getProductPrice(productId) {
         return 0; 
     }
 }
+
+module.exports.removeFromCart = (req, res) => {
+    return Cart.findOne({userId: req.user.id})
+    .then(existingCart => {
+        if(!existingCart) {
+            return res.status(200).send({ message: 'No cart found.' });
+        }
+
+        const foundIndex = existingCart.cartItems.findIndex(el => el.productId === req.params.productId);
+        if (foundIndex !== -1) {
+            existingCart.cartItems.splice(foundIndex, 1)
+            existingCart.totalPrice -= existingCart.cartItems[foundIndex].subtotal;
+        } else {
+            return res.status(200).send({ message: 'No cart item found.' });
+        }
+
+        existingCart.save()
+        .then(savedCart => {
+            return res.status(200).send({message: "Successfully removed product from Cart", savedCart})
+        })
+        .catch(saveErr => {
+            console.error("Error in saving the cart:", saveErr);
+            return res.status(500).send({error: 'Failed to save the cart'})
+        });
+    }) 
+    .catch(findErr=>{
+        console.error("Error in finding the cart", findErr)
+        return res.status(500).send({error: 'Error finding the cart'})
+    })
+}
+
+module.exports.searchByName = async (req, res) => {
+  try {
+    const { name } = req.body;
+
+    const products = await Product.find({
+      name: { $regex: name, $options: 'i' }
+    });
+
+    res.status(200).json(products);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};

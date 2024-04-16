@@ -10,4 +10,8 @@ router.post("/add-to-cart", verify, cartController.addToCart);
 
 router.patch("/update-cart-quantity", verify, cartController.updateQuantity)
 
+router.patch("/:productId/remove-from-cart", verify, cartController.removeFromCart)
+
+router.post("/products/searchByName", cartController.searchByName);
+
 module.exports = router;
