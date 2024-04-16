@@ -31,6 +31,9 @@ Cart Resources:
 - Add cart
 - Remove products from cart
 
+Order Resources:
+- Non-admin User checkout
+
 Search Functionalities:
 - Search by name
 
