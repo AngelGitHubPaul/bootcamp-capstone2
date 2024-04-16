@@ -3,11 +3,16 @@ const cartController = require("../controllers/cart");
 const router = express.Router();
 const { verify, verifyAdmin } = require("../auth");
 
-//Route for retrieving user's cart
 router.get("/get-cart", verify, cartController.getCart);
 
 router.post("/add-to-cart", verify, cartController.addToCart);
 
-router.patch("/update-cart-quantity", verify, cartController.updateQuantity)
+router.patch("/update-cart-quantity", verify, cartController.updateQuantity);
+
+router.put("/clear-cart", verify, cartController.clearCart);
+
+router.post('/products/searchByPrice', cartController.searchByPrice);
+
+
 
 module.exports = router;

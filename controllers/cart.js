@@ -117,3 +117,40 @@ async function getProductPrice(productId) {
         return 0; 
     }
 }
+
+
+module.exports.clearCart = async (req, res) => {
+    try {
+        const cart = await Cart.findOne({userId: req.user.id})
+        if (cart) {
+            cart.cartItems = [];
+            cart.totalPrice = 0;
+            await cart.save()
+            return res.send(cart)
+        } else {
+            return res.status(404).send("Cart not found!")
+        }
+    } catch(err) {
+        console.error(err)
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+
+};
+
+
+module.exports.searchByPrice = async (req, res) => {
+    try {
+        const { minPrice, maxPrice } = req.body;
+
+        const product = await Product.find({
+            price: { $gte: minPrice, $lte: maxPrice }
+        });
+        return res.status(200).json({ product });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+
+
