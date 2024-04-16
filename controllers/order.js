@@ -9,7 +9,7 @@ module.exports.checkout = (req, res) => {
             return res.status(404).send({error : 'Cart not found'})
         } 
 
-        if(existingCart.cartItems !== []) {
+        if(existingCart.cartItems.length !== 0) {
             let newOrder = new Order({
                 userId: req.user.id,
                 productsOrdered : existingCart.cartItems,
