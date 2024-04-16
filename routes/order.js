@@ -3,7 +3,7 @@ const orderController = require("../controllers/order");
 const router = express.Router();
 const { verify, verifyAdmin } = require("../auth");
 
-router.post("/checkout", verify, productController.checkout);
+router.post("/checkout", verify, orderController.checkout);
 
 router.get("/my-orders", verify, orderController.getUserOrder);
 
