@@ -2,20 +2,21 @@ const Cart = require("../models/Cart");
 const Order = require("../models/Order");
 
 module.exports.checkout = (req, res) => {
-    return Cart.find({userId : req.user.id})
+    return Cart.findOne({userId : req.user.id})
     .then(existingCart => {
+        console.log(existingCart);
         if (!existingCart) {
             return res.status(404).send({error : 'Cart not found'})
         } 
 
-        if(existingCart.cartItems.length > 0) {
+        if(existingCart.cartItems !== []) {
             let newOrder = new Order({
                 userId: req.user.id,
                 productsOrdered : existingCart.cartItems,
                 totalPrice : existingCart.totalPrice
             })
 
-            return newCart.save()
+            return newOrder.save()
             .then(savedCart => {
                 return res.status(201).send({message: "Successfully Added to Cart",savedCart})
             })
