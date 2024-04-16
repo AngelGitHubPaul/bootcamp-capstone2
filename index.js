@@ -10,8 +10,6 @@ const app = express();
 
 mongoose.connect("mongodb+srv://admin:admin123@b402-course-booking.u2y1t4i.mongodb.net/ecommerce-api?retryWrites=true&w=majority&appName=B402-Course-Booking");
 
-
-
 let db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error"));
 db.once("open", () => console.log("Now connected to MongoDB Atlas"));
