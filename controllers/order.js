@@ -32,9 +32,6 @@ module.exports.checkout = (req, res) => {
     	res.status(500).send({error: "Error finding cart."})
     });
 }
-const Order = require("../models/Order");
-const User = require("../models/User");
-
 
 module.exports.getUserOrder = (req, res) => {
 
