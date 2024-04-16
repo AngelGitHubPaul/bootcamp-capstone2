@@ -1,0 +1,34 @@
+const Cart = require("../models/Cart");
+const Order = require("../models/Order");
+
+module.exports.checkout = (req, res) => {
+    return Cart.find({userId : req.user.id})
+    .then(existingCart => {
+        if (!existingCart) {
+            return res.status(404).send({error : 'Cart not found'})
+        } 
+
+        if(existingCart.cartItems.length > 0) {
+            let newOrder = new Order({
+                userId: req.user.id,
+                productsOrdered : existingCart.cartItems,
+                totalPrice : existingCart.totalPrice
+            })
+
+            return newCart.save()
+            .then(savedCart => {
+                return res.status(201).send({message: "Successfully Added to Cart",savedCart})
+            })
+            .catch(saveErr => {
+                console.error("Error in saving the cart:", saveErr);
+                return res.status(500).send({error: 'Failed to save the cart'})
+            });
+        } else {
+            return res.status(200).send({ message: 'No items found in cart.' });
+        }  
+    })
+    .catch(err => {
+    	console.error("Error in finding cart: ", err)
+    	res.status(500).send({error: "Error finding cart."})
+    });
+}
