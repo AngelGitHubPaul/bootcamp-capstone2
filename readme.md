@@ -33,3 +33,24 @@ Cart Resources:
 
 Search Functionalities:
 - Search by name
+
+## Features by Lovely Sendaydiego
+User Resources:
+- User registration
+- Retrieve userdetails
+- Update password
+
+Product Resources:
+- Create product
+- Retrieve all product
+- Retrieve all active product
+
+Cart Resources:
+- Get cart
+- Change product quantities
+- Clear cart
+
+
+Search Functionalities:
+- Search by price range
+
