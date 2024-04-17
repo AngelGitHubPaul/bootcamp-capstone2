@@ -1,7 +1,6 @@
 {
-    "url": "http://instancelinkdonotforgettheappendedforwardslash.com/",
+    "url": "http://ec2-3-135-239-184.us-east-2.compute.amazonaws.com",
     "routesPrefix": {
-
         "users": "/b5/users",
         "products": "/b5/products",
         "orders": "/b5/orders",
