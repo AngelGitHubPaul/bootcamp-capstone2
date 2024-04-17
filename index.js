@@ -28,3 +28,5 @@ if(require.main === module) {
 		console.log(`API is now online on port ${ process.env.PORT || port}`);
 	})
 }
+
+module.exports = {app, mongoose};
