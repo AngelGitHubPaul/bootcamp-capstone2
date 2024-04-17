@@ -53,6 +53,9 @@ Cart Resources:
 - Change product quantities
 - Clear cart
 
+Order Resources:
+- Retrieve logged in user's orders
+- Retrieve all user's order
 
 Search Functionalities:
 - Search by price range
