@@ -87,7 +87,7 @@ module.exports.updateProduct = (req, res) => {
         price: req.body.price
     }
 
-    return Product.findByIdAndUpdate(req.params.productId, updatedProduct, {new: true})
+    return Product.findByIdAndUpdate(req.params.productId, updatedProduct)
     .then(updatedProduct => {
 
         if(updatedProduct) {
@@ -113,7 +113,7 @@ module.exports.archiveProduct = (req, res) => {
     if(!req.user.isAdmin){
         return res.status(403).send(false)
     } else {
-        return Product.findByIdAndUpdate(req.params.productId, updateActiveField, {new: true})
+        return Product.findByIdAndUpdate(req.params.productId, updateActiveField)
         .then(archivedProduct => {
             if (archivedProduct) {
                 res.status(200).send({
@@ -138,7 +138,7 @@ module.exports.activateProduct = (req, res) => {
     if(!req.user.isAdmin){
         return res.status(403).send(false)
     } else {
-        return Product.findByIdAndUpdate(req.params.productId, updateActiveField, {new: true})
+        return Product.findByIdAndUpdate(req.params.productId, updateActiveField)
         .then(activatedProduct => {
             if (activatedProduct) {
                 return res.status(200).send({

@@ -35,16 +35,16 @@ module.exports.setAsAdmin = async (req, res) => {
         const user = await User.findById(userId);
 
         if (!user) {
-            return res.tatus(404).json({ message: 'User not found.' });
+            return res.tatus(404).send({ message: 'User not found.' });
         }
 
         user.isAdmin = true;
         await user.save();
 
-        res.status(200).json({ message: 'User updated as admin successfully.' });
+        res.status(200).send({ message: 'User updated as admin successfully.' });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: 'An error occurred while updating user as admin.' });
+        res.status(500).send({ message: 'An error occurred while updating user as admin.' });
     }
 }
 
@@ -110,9 +110,9 @@ module.exports.resetPassword = async (req, res) => {
   
 	  await User.findByIdAndUpdate(id, { password: hashedPassword });
   
-	  res.status(200).json({ message: 'Password reset successfully' });
+	  res.status(200).send({ message: 'Password reset successfully' });
 	} catch (error) {
 	  console.error(error);
-	  res.status(500).json({ message: 'Internal server error' });
+	  res.status(500).send({ message: 'Internal server error' });
 	}
   };
