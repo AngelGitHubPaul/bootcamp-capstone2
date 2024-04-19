@@ -148,22 +148,6 @@ module.exports.removeFromCart = (req, res) => {
     })
 }
 
-module.exports.searchByName = async (req, res) => {
-  try {
-    const { name } = req.body;
-
-    const products = await Product.find({
-      name: { $regex: name, $options: 'i' }
-    });
-
-    res.status(200).send(products);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({ error: 'Internal Server Error' });
-  }
-};
-
-
 module.exports.clearCart = async (req, res) => {
     try {
         const cart = await Cart.findOne({userId: req.user.id})
@@ -180,19 +164,4 @@ module.exports.clearCart = async (req, res) => {
         return res.status(500).send({ error: 'Internal server error' });
     }
 
-};
-
-
-module.exports.searchByPrice = async (req, res) => {
-    try {
-        const { minPrice, maxPrice } = req.body;
-
-        const products = await Product.find({
-            price: { $gte: minPrice, $lte: maxPrice }
-        });
-        return res.status(200).send({ products });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).send({ error: 'Internal server error' });
-    }
 };

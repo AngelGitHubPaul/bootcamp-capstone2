@@ -114,11 +114,11 @@ module.exports.archiveProduct = (req, res) => {
         return res.status(403).send(false)
     } else {
         return Product.findByIdAndUpdate(req.params.productId, updateActiveField)
-        .then(archivedProduct => {
-            if (archivedProduct) {
+        .then(archiveProduct => {
+            if (archiveProduct) {
                 res.status(200).send({
                     message : 'Product archived successfully',
-                    archiveCourse : archivedProduct
+                    archiveProduct : archiveProduct
                 });
             } else {
                 res.status(404).send({error : 'Product not found'});
@@ -139,11 +139,11 @@ module.exports.activateProduct = (req, res) => {
         return res.status(403).send(false)
     } else {
         return Product.findByIdAndUpdate(req.params.productId, updateActiveField)
-        .then(activatedProduct => {
-            if (activatedProduct) {
+        .then(activateProduct => {
+            if (activateProduct) {
                 return res.status(200).send({
                 message : 'Product activated successfully',
-                activatedProduct: activatedProduct
+                activateProduct: activateProduct
             });
             } else {
                 return res.status(404).send({error: "Product not found"});
@@ -157,3 +157,31 @@ module.exports.activateProduct = (req, res) => {
     
 };
 
+module.exports.searchByName = async (req, res) => {
+  try {
+    const { name } = req.body;
+
+    const products = await Product.find({
+      name: { $regex: name, $options: 'i' }
+    });
+
+    res.status(200).send(products);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: 'Internal Server Error' });
+  }
+};
+
+module.exports.searchByPrice = async (req, res) => {
+    try {
+        const { minPrice, maxPrice } = req.body;
+
+        const products = await Product.find({
+            price: { $gte: minPrice, $lte: maxPrice }
+        });
+        return res.status(200).send({ products });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send({ error: 'Internal server error' });
+    }
+};

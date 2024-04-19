@@ -55,15 +55,15 @@ module.exports.getUserOrder = (req, res) => {
 module.exports.getAllOrder = (req, res) => {
 
     return Order.find({})
-    .then(order => {
-        if(order.length > 0){
-            return res.status(200).send({order});
+    .then(orders => {
+        if(orders.length > 0){
+            return res.status(200).send({orders});
         } else {
-            return res.status(200).send({ message: 'No order found.' });
+            return res.status(200).send({ message: 'No orders found.' });
         }
     })
     .catch(err => {
-        console.error("Error in finding all order: ", err)
-        return res.status(500).send({error: "Error finding order"})
+        console.error("Error in finding all orders: ", err)
+        return res.status(500).send({error: "Error finding orders"})
     });
 };

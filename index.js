@@ -21,7 +21,7 @@ app.use(express.urlencoded({extended:true}));
 app.use("/b5/users", userRoutes);
 app.use("/b5/products", productRoutes);
 app.use("/b5/cart", cartRoutes);
-app.use("/b5/order", orderRoutes);
+app.use("/b5/orders", orderRoutes);
 
 if(require.main === module) {
 	app.listen(process.env.PORT || port, () => {
