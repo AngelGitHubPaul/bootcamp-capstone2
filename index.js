@@ -6,6 +6,8 @@ const userRoutes = require("./routes/user");
 const productRoutes = require("./routes/product");
 const cartRoutes = require("./routes/cart");
 const orderRoutes = require("./routes/order");
+const cors = require("cors");
+
 
 const app = express();
 
@@ -17,6 +19,7 @@ db.once("open", () => console.log("Now connected to MongoDB Atlas"));
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
+app.use(cors());
 
 app.use("/b5/users", userRoutes);
 app.use("/b5/products", productRoutes);
