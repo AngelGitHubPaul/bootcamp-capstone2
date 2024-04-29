@@ -27,18 +27,100 @@ module.exports.checkout = (req, res) => {
         totalPrice : req.body.totalPrice
     });
 
-    newCart.save()
-    .then(savedCart => {
-        console.log({message: "Successfully Added to Cart",savedCart})
-    })
-    .catch(saveErr => {
-        console.error("Error in saving the cart:", saveErr);
-        console.log({error: 'Failed to save the cart'})
-    });
+    return Cart.findOne({userId: req.user.id})
+    .then(existingCart => {
+        if (!existingCart){
+            newCart.save()
+            .then(savedCart => {
+                console.log({message: "Successfully Added to Cart",savedCart});
 
+                return Cart.findOne({userId : req.user.id});
+            })
+            .then(existingCart => {
+                console.log(existingCart);
+                if (!existingCart) {
+                    return res.status(404).send({error : 'Cart not found'});
+                } 
+
+                if(existingCart.cartItems.length !== 0) {
+                    let newOrder = new Order({
+                        userId: req.user.id,
+                        productsOrdered : existingCart.cartItems,
+                        totalPrice : existingCart.totalPrice
+                    });
+
+                    return newOrder.save()
+                    .then(savedOrder => {
+                        clearCart(req.user.id);
+                        return res.status(201).send({message: "Successfully Added Order",savedOrder});
+                    })
+                    .catch(saveErr => {
+                        console.error("Error in saving the order:", saveErr);
+                        return res.status(500).send({error: 'Failed to save the order'});
+                    });
+                } else {
+                    return res.status(200).send({ message: 'No items found in cart.' });
+                }  
+            })
+            .catch(err => {
+                console.error("Error in finding or saving cart: ", err);
+                res.status(500).send({error: "Error finding or saving cart."});
+            });
+
+        } else {
+            req.body.cartItems.forEach(newCartItem => {
+                const foundIndex = existingCart.cartItems.findIndex(el => el.productId === newCartItem.productId);
+                if (foundIndex !== -1) {
+                    existingCart.cartItems[foundIndex].quantity += newCartItem.quantity;
+                    existingCart.cartItems[foundIndex].subtotal += newCartItem.subtotal;
+                } else {
+                    existingCart.cartItems.push(newCartItem);
+                }
+            });
+
+            existingCart.totalPrice += req.body.totalPrice;
+
+            existingCart.save()
+            .then(savedCart => {
+                console.log({message: "Successfully Added to Cart", savedCart})
+                return Cart.findOne({userId : req.user.id});
+            })
+            .then(existingCart => {
+                console.log(existingCart);
+                if (!existingCart) {
+                    return res.status(404).send({error : 'Cart not found'});
+                } 
+
+                if(existingCart.cartItems.length !== 0) {
+                    let newOrder = new Order({
+                        userId: req.user.id,
+                        productsOrdered : existingCart.cartItems,
+                        totalPrice : existingCart.totalPrice
+                    });
+
+                    return newOrder.save()
+                    .then(savedOrder => {
+                        clearCart(req.user.id);
+                        return res.status(201).send({message: "Successfully Added Order",savedOrder});
+                    })
+                    .catch(saveErr => {
+                        console.error("Error in saving the order:", saveErr);
+                        return res.status(500).send({error: 'Failed to save the order'});
+                    });
+                } else {
+                    return res.status(200).send({ message: 'No items found in cart.' });
+                }  
+            })
+        }
+
+    })
+    .catch(findErr=>{
+        console.error("Error in finding the cart", findErr)
+        console.log({error: 'Error finding the cart'})
+    })
 
     // Original code
-    return Cart.findOne({userId : req.user.id})
+    /*return Cart.findOne({userId : req.user.id})
     .then(existingCart => {
         console.log(existingCart);
         if (!existingCart) {
@@ -68,7 +150,7 @@ module.exports.checkout = (req, res) => {
     .catch(err => {
     	console.error("Error in finding cart: ", err)
     	res.status(500).send({error: "Error finding cart."})
-    });
+    });*/
 }
 
 module.exports.getUserOrder = (req, res) => {
