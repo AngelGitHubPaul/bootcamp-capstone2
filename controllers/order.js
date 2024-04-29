@@ -1,7 +1,43 @@
 const Cart = require("../models/Cart");
 const Order = require("../models/Order");
 
+// Added for capstone 3
+const clearCart = async (userId) => {
+    try {
+        const cart = await Cart.findOne({userId: userId})
+        if (cart) {
+            cart.cartItems = [];
+            cart.totalPrice = 0;
+            await cart.save()
+            return res.send(cart)
+        } else {
+            console.log("Cart not found!")
+        }
+    } catch(err) {
+        console.error(err)
+        console.log({ error: 'Internal server error' });
+    }
+}
+
 module.exports.checkout = (req, res) => {
+    // Added for capstone 3
+    let newCart = new Cart({
+        userId: req.user.id,
+        cartItems : req.body.cartItems,
+        totalPrice : req.body.totalPrice
+    });
+
+    newCart.save()
+    .then(savedCart => {
+        console.log({message: "Successfully Added to Cart",savedCart})
+    })
+    .catch(saveErr => {
+        console.error("Error in saving the cart:", saveErr);
+        console.log({error: 'Failed to save the cart'})
+    });
+
+
+    // Original code
     return Cart.findOne({userId : req.user.id})
     .then(existingCart => {
         console.log(existingCart);
@@ -17,12 +53,13 @@ module.exports.checkout = (req, res) => {
             })
 
             return newOrder.save()
-            .then(savedCart => {
-                return res.status(201).send({message: "Successfully Added to Cart",savedCart})
+            .then(savedOrder => {
+                clearCart(req.user.id);
+                return res.status(201).send({message: "Successfully Added Order",savedOrder})
             })
             .catch(saveErr => {
-                console.error("Error in saving the cart:", saveErr);
-                return res.status(500).send({error: 'Failed to save the cart'})
+                console.error("Error in saving the order:", saveErr);
+                return res.status(500).send({error: 'Failed to save the order'})
             });
         } else {
             return res.status(200).send({ message: 'No items found in cart.' });
