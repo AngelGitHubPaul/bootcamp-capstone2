@@ -155,17 +155,17 @@ module.exports.checkout = (req, res) => {
 
 module.exports.getUserOrder = (req, res) => {
 
-    return Order.findOne({userId: req.user.id})
-    .then(order => {
-        if(order){
-            return res.status(200).send({order});
+    return Order.find({userId: req.user.id})
+    .then(orders => {
+        if(orders.length > 0){
+            return res.status(200).send({orders});
         } else {
-            return res.status(200).send({ message: 'No order found.' });
+            return res.status(200).send({ message: 'No orders found.' });
         }
     })
     .catch(err => {
-        console.error("Error in finding all order: ", err)
-        return res.status(500).send({error: "Error finding order"})
+        console.error("Error in finding all user orders: ", err)
+        return res.status(500).send({error: "Error finding user orders"})
     });
 };
 
