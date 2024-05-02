@@ -7,6 +7,8 @@ router.post("/", userController.registerUser);
 
 router.post("/login", userController.loginUser);
 
+router.post("/find-user", verify, verifyAdmin, userController.findUser);
+
 router.get("/details", verify, userController.getProfile);
 
 router.patch("/:userId/set-as-admin", verify, verifyAdmin, userController.setAsAdmin);
