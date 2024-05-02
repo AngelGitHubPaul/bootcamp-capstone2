@@ -78,7 +78,23 @@ module.exports.registerUser = (req, res) => {
 
 }
 
+module.exports.findUser = (req, res) => {
+	const userId = req.body.id;
 
+    return User.findById(userId)
+    .then(user => {
+    	if (!user) {
+    	    return res.status(404).send({ error: 'User not found' });
+    	}
+
+        user.password = "";
+        return res.status(200).send({ user });
+    })
+    .catch(err => {
+    	console.error("Error in fetching user", err)
+        return res.status(500).send({ error: 'Failed to fetch user' })
+    });
+};
 
 //Retrieve userdetails
 module.exports.getProfile = (req, res) => {
